@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}Baş sahypa - Okuw Merkezi{% endblock %}
+
+{% block content %}
+<div class="stats">
+    <div class="stat-card">
+        <div class="stat-value">{{ total_lessons }}</div>
+        <div class="stat-label">Jemi sapaklar</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">📖</div>
+        <div class="stat-label">Okuw materiallary</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">🎓</div>
+        <div class="stat-label">Hünär taýýarlygy</div>
+    </div>
+</div>
+
+<div class="card">
+    <h1 style="color: #1890ff; margin-bottom: 16px;">Okuw Merkezine hoş geldiňiz</h1>
+    <p style="font-size: 16px; color: #666; margin-bottom: 24px;">
+        Ähli okuw materiallaryna bir ýerden giriň. Sapaklary gözläň, goşmaça faýllary göçürip alyň 
+        we ählitaraplaýyn okuw çeşmeleri bilen hünär başarnyklarňyzy ösdüriň.
+    </p>
+    <div style="display: flex; gap: 16px;">
+        <a href="{% url 'lesson_list' %}" class="btn">Ähli sapaklary görmek</a>
+    </div>
+</div>
+
+{% if recent_lessons %}
+<div class="card">
+    <h2 class="card-title">📌 Soňky sapaklar</h2>
+    <div class="lesson-grid">
+        {% for lesson in recent_lessons %}
+        <div class="lesson-card" onclick="window.location.href='{% url 'lesson_detail' lesson.pk %}'">
+            <div class="lesson-card-header">
+                <div class="lesson-card-title">{{ lesson.title }}</div>
+                <div class="lesson-card-date">{{ lesson.date_created|date:"d.m.Y" }}</div>
+            </div>
+            <div class="lesson-card-body">
+                {% if lesson.description %}
+                <p class="lesson-card-description">{{ lesson.description }}</p>
+                {% else %}
+                <p class="lesson-card-description" style="color: #999; font-style: italic;">
+                    Düşündiriş ýok
+                </p>
+                {% endif %}
+                <div class="lesson-card-footer">
+                    {% if lesson.attachments.count > 0 %}
+                    <span class="attachment-badge">
+                        📎 {{ lesson.attachments.count }} goşmaça faýl
+                    </span>
+                    {% else %}
+                    <span class="attachment-badge" style="background: #f5f5f5; color: #999;">
+                        📝 Diňe tekst
+                    </span>
+                    {% endif %}
+                    <a href="{% url 'lesson_detail' lesson.pk %}" class="btn" style="font-size: 12px; padding: 6px 12px;" onclick="event.stopPropagation();">Görmek</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% else %}
+<div class="card" style="text-align: center; padding: 48px;">
+    <div style="font-size: 64px; margin-bottom: 16px;">📚</div>
+    <h3 style="color: #666; margin-bottom: 8px;">Entek sapak ýok</h3>
+    <p style="color: #999;">Soňra täzeden barlap görüň.</p>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Ähli sapaklar - Okuw Merkezi{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1 style="color: #1890ff; margin-bottom: 8px;">Ähli okuw sapaklary</h1>
+    <p style="color: #666;">Bar bolan okuw materiallaryny gözläň we ulanyň</p>
+</div>
+
+{% if lessons %}
+<div class="lesson-grid">
+    {% for lesson in lessons %}
+    <div class="lesson-card" onclick="window.location.href='{% url 'lesson_detail' lesson.pk %}'">
+        <div class="lesson-card-header">
+            <div class="lesson-card-title">{{ lesson.title }}</div>
+            <div class="lesson-card-date">{{ lesson.date_created|date:"d.m.Y" }}</div>
+        </div>
+        <div class="lesson-card-body">
+            {% if lesson.description %}
+            <p class="lesson-card-description">{{ lesson.description }}</p>
+            {% else %}
+            <p class="lesson-card-description" style="color: #999; font-style: italic;">
+                Düşündiriş ýok
+            </p>
+            {% endif %}
+            <div class="lesson-card-footer">
+                {% if lesson.attachments.count > 0 %}
+                <span class="attachment-badge">
+                    📎 {{ lesson.attachments.count }} goşmaça faýl
+                </span>
+                {% else %}
+                <span class="attachment-badge" style="background: #f5f5f5; color: #999;">
+                    📝 Diňe tekst
+                </span>
+                {% endif %}
+                <a href="{% url 'lesson_detail' lesson.pk %}" class="btn" style="font-size: 12px; padding: 6px 12px;" onclick="event.stopPropagation();">Görmek</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% if is_paginated %}
+<div class="pagination">
+    {% if page_obj.has_previous %}
+    <a href="?page=1">« Birinji</a>
+    <a href="?page={{ page_obj.previous_page_number }}">Öňki</a>
+    {% endif %}
+    
+    <span class="current">Sahypa {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+    
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}">Indiki</a>
+    <a href="?page={{ page_obj.paginator.num_pages }}">Soňky »</a>
+    {% endif %}
+</div>
+{% endif %}
+
+{% else %}
+<div class="card" style="text-align: center; padding: 48px;">
+    <div style="font-size: 64px; margin-bottom: 16px;">📚</div>
+    <h3 style="color: #666; margin-bottom: 8px;">Sapak ýok</h3>
+    <p style="color: #999; margin-bottom: 24px;">Entek çap edilen sapak ýok. Soňra täzeden barlap görüň.</p>
+    <a href="{% url 'home' %}" class="btn">Baş sahypa dolan</a>
+</div>
+{% endif %}
+{% endblock %}
